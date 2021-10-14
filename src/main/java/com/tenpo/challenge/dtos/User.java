@@ -1,4 +1,4 @@
-package com.tenpo.challenge.model;
+package com.tenpo.challenge.dtos;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -6,16 +6,18 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 
+@Entity
+@Table(name = "users")
 @Getter
 @Setter
 @Accessors(chain = true)
 @EqualsAndHashCode
 public class User {
-    @NotEmpty(message = "Please provide a user_name attribute in JSON request")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(unique = true)
     private String userName;
-    @NotEmpty(message = "Please provide a password attribute in JSON request")
     private String password;
 }

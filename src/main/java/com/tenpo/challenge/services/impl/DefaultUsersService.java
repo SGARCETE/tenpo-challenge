@@ -1,6 +1,6 @@
 package com.tenpo.challenge.services.impl;
 
-import com.tenpo.challenge.dtos.UserDTO;
+import com.tenpo.challenge.dtos.User;
 import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
 import com.tenpo.challenge.repository.UsersRepository;
 import com.tenpo.challenge.services.UsersService;
@@ -18,7 +18,7 @@ public class DefaultUsersService implements UsersService {
     @Autowired
     private final UsersRepository usersRepository;
 
-    public UserDTO createUser(UserDTO user) {
+    public User createUser(User user) {
         if (usersRepository.findByUserName(user.getUserName()).isPresent())
             throw new UserAlreadyExistsException(String.format("The user with name %s already exists", user.getUserName()));
         user.setPassword(encoder.encode(user.getPassword()));

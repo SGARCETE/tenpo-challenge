@@ -1,12 +1,12 @@
 package com.tenpo.challenge.services;
 
-import com.tenpo.challenge.dtos.UserDTO;
+import com.tenpo.challenge.dtos.User;
 
 public interface AuthService {
-    UserDTO loginUser(String userName, String password);
-    UserDTO logoutUser(String userName);
-    void checkIfUserIsAlreadyLogged(UserDTO userDTO);
-    String getAndSaveToken(UserDTO userDTO);
-    void addActiveUserToken(UserDTO userDTO, String token);
+    User loginUser(String userName, String password);
+    User logoutUser(String userName);
+    void checkIfUserIsAlreadyLogged(User userDTO);
+    String getAndSaveToken(User userDTO);
+    void addActiveUserToken(User userDTO, String token);
     void deleteAllUsersTokens();
 }

@@ -1,7 +1,7 @@
 package com.tenpo.challenge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tenpo.challenge.dtos.UserDTO;
+import com.tenpo.challenge.dtos.User;
 import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
@@ -33,7 +33,7 @@ public class AuthControllerTest {
     @MockBean
     private AuthService authService;
 
-    private UserDTO user;
+    private User user;
     private String token;
 
     @BeforeEach
@@ -45,10 +45,10 @@ public class AuthControllerTest {
     @Test
     void testAuthUserSuccessfullyWithStatus200ReturnsUserId() throws Exception {
         doReturn(user).when(authService).loginUser(anyString(), anyString());
-        doReturn(token).when(authService).getAndSaveToken(any(UserDTO.class));
-        doNothing().when(authService).checkIfUserIsAlreadyLogged(any(UserDTO.class));
+        doReturn(token).when(authService).getAndSaveToken(any(User.class));
+        doNothing().when(authService).checkIfUserIsAlreadyLogged(any(User.class));
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/auth/login")
                 .content(objectMapper.writeValueAsString(user))
                 .contentType("application/json"))
                 .andExpect(status().isOk())
@@ -63,10 +63,10 @@ public class AuthControllerTest {
         UserNotFoundException expectedException = new UserNotFoundException(String.format("The user with name %s does not exists",
                 user.getUserName()));
 
-        doNothing().when(authService).checkIfUserIsAlreadyLogged(any(UserDTO.class));
+        doNothing().when(authService).checkIfUserIsAlreadyLogged(any(User.class));
         doThrow(expectedException).when(authService).loginUser(user.getUserName(), user.getPassword());
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/auth/login")
                 .content(objectMapper.writeValueAsString(user))
                 .contentType("application/json"))
                 .andExpect(jsonPath("$.error").value("User not found Exception"))
@@ -81,10 +81,10 @@ public class AuthControllerTest {
         PasswordNotValidException expectedException = new PasswordNotValidException(String.format("Password not valid for user %s",
                 user.getUserName()));
 
-        doNothing().when(authService).checkIfUserIsAlreadyLogged(any(UserDTO.class));
+        doNothing().when(authService).checkIfUserIsAlreadyLogged(any(User.class));
         doThrow(expectedException).when(authService).loginUser(user.getUserName(), user.getPassword());
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/auth/login")
                 .content(objectMapper.writeValueAsString(user))
                 .contentType("application/json"))
                 .andExpect(jsonPath("$.error").value("Password not valid exception"))
@@ -98,9 +98,9 @@ public class AuthControllerTest {
 
         UserAlreadyLoggedException expectedException = new UserAlreadyLoggedException(String.format("The user with name %s is already logged", user.getUserName()));
 
-        doThrow(expectedException).when(authService).checkIfUserIsAlreadyLogged(any(UserDTO.class));
+        doThrow(expectedException).when(authService).checkIfUserIsAlreadyLogged(any(User.class));
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/auth/login")
                 .content(objectMapper.writeValueAsString(user))
                 .contentType("application/json"))
                 .andExpect(jsonPath("$.error").value("User already logged exception"))
@@ -109,8 +109,8 @@ public class AuthControllerTest {
         ;
     }
 
-    private UserDTO buildExpectedUser() {
-        return new UserDTO()
+    private User buildExpectedUser() {
+        return new User()
                 .setId(1L)
                 .setUserName("Santiago")
                 .setPassword("Garcete");

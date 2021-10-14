@@ -1,6 +1,6 @@
 package com.tenpo.challenge.services;
 
-import com.tenpo.challenge.dtos.UserDTO;
+import com.tenpo.challenge.dtos.User;
 import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
 import com.tenpo.challenge.repository.UsersRepository;
 import com.tenpo.challenge.services.impl.DefaultUsersService;
@@ -29,23 +29,23 @@ public class DefaultUsersServiceTest {
 
     @Test
     public void testCreateUserThenReturnSameUser() {
-        UserDTO expectedUser = buildNewUserDto();
-        Mockito.when(userRepository.save(Mockito.any(UserDTO.class))).thenReturn(expectedUser);
-        UserDTO response = userService.createUser(expectedUser);
+        User expectedUser = buildNewUserDto();
+        Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(expectedUser);
+        User response = userService.createUser(expectedUser);
         assertEquals(expectedUser, response);
     }
 
     @Test
     public void testCreateUserThenThrowsUserAlreadyExistsException() {
-        UserDTO expectedUser = buildNewUserDto();
+        User expectedUser = buildNewUserDto();
         Mockito.when(userRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(expectedUser));
         Throwable ex = assertThrows(UserAlreadyExistsException.class, () -> {
             userService.createUser(expectedUser);});
         assertEquals(String.format("The user with name %s already exists", expectedUser.getUserName()), ex.getMessage());
     }
 
-    private UserDTO buildNewUserDto() {
-        UserDTO expectedUser = new UserDTO();
+    private User buildNewUserDto() {
+        User expectedUser = new User();
         expectedUser.setId(1L);
         expectedUser.setUserName("Santi");
         expectedUser.setPassword("Garcete");

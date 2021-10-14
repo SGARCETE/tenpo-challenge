@@ -1,6 +1,6 @@
 package com.tenpo.challenge.services;
 
-import com.tenpo.challenge.dtos.UserDTO;
+import com.tenpo.challenge.dtos.User;
 import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
@@ -21,7 +21,7 @@ public class DefaultAuthServiceTest {
     private AuthService authService;
     private UsersRepository userRepository;
     private PasswordEncoder passwordEncoder;
-    private UserDTO user;
+    private User user;
 
     @Before
     public void setUp() {
@@ -36,7 +36,7 @@ public class DefaultAuthServiceTest {
     public void testLoginUserThenReturnsUser() {
         Mockito.when(userRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(this.user));
         Mockito.when(passwordEncoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
-        UserDTO response = authService.loginUser(this.user.getUserName(), this.user.getPassword());
+        User response = authService.loginUser(this.user.getUserName(), this.user.getPassword());
         assertEquals(this.user, response);
     }
 
@@ -68,7 +68,7 @@ public class DefaultAuthServiceTest {
     public void testLogoutUserThenReturnsUser() {
         Mockito.when(userRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(this.user));
         authService.addActiveUserToken(user, "bla");
-        UserDTO response = authService.logoutUser(this.user.getUserName());
+        User response = authService.logoutUser(this.user.getUserName());
         assertEquals(this.user, response);
     }
 
@@ -88,8 +88,8 @@ public class DefaultAuthServiceTest {
         assertEquals(String.format("The user with name %s is not logged", user.getUserName()), ex.getMessage());
     }
 
-    private UserDTO buildNewUser() {
-        UserDTO expectedUser = new UserDTO();
+    private User buildNewUser() {
+        User expectedUser = new User();
         expectedUser.setId(1L);
         expectedUser.setUserName("Santi");
         expectedUser.setPassword("Garcete");

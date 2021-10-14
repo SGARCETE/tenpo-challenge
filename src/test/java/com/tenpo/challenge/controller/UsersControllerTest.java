@@ -1,7 +1,7 @@
 package com.tenpo.challenge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tenpo.challenge.dtos.UserDTO;
+import com.tenpo.challenge.dtos.User;
 import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
 import com.tenpo.challenge.services.UsersService;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,9 +38,9 @@ public class UsersControllerTest {
     @Test
     void testCreateUserSuccessfullyWithStatus200ReturnsUserId() throws Exception {
 
-        UserDTO expectedUser = buildExpectedUser();
+        User expectedUser = buildExpectedUser();
 
-        doReturn(expectedUser).when(userService).createUser(any(UserDTO.class));
+        doReturn(expectedUser).when(userService).createUser(any(User.class));
 
         mockMvc.perform(post("/users")
                 .content(objectMapper.writeValueAsString(expectedUser))
@@ -53,11 +53,11 @@ public class UsersControllerTest {
     @Test
     void testCreateUserFailWithStatus400UserAlreadyExistsException() throws Exception {
 
-        UserDTO expectedUser = buildExpectedUser();
+        User expectedUser = buildExpectedUser();
 
         UserAlreadyExistsException expectedException = new UserAlreadyExistsException(String.format("The user with name %s already exists",
                 expectedUser.getUserName()));
-        doThrow(expectedException).when(userService).createUser(any(UserDTO.class));
+        doThrow(expectedException).when(userService).createUser(any(User.class));
 
         mockMvc.perform(post("/users")
                 .content(objectMapper.writeValueAsString(expectedUser))
@@ -68,8 +68,8 @@ public class UsersControllerTest {
         ;
     }
 
-    private UserDTO buildExpectedUser() {
-        return new UserDTO()
+    private User buildExpectedUser() {
+        return new User()
                 .setId(1L)
                 .setUserName("Santiago")
                 .setPassword("Garcete");

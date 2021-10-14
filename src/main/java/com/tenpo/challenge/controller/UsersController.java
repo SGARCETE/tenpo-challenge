@@ -1,7 +1,7 @@
 package com.tenpo.challenge.controller;
 
-import com.tenpo.challenge.dtos.UserDTO;
-import com.tenpo.challenge.model.User;
+import com.tenpo.challenge.dtos.User;
+import com.tenpo.challenge.model.UserDto;
 import com.tenpo.challenge.resources.UserResource;
 import com.tenpo.challenge.services.UsersService;
 import com.tenpo.challenge.util.MappingHelper;
@@ -26,9 +26,9 @@ public class UsersController {
     private UsersService usersService;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        UserDTO userDTO = MappingHelper.map(user, UserDTO.class);
-        UserDTO response = usersService.createUser(userDTO);
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto user) {
+        User userDTO = MappingHelper.map(user, User.class);
+        User response = usersService.createUser(userDTO);
         LOGGER.debug(String.format("User with id %s created succesfully", response.getId()));
         return new ResponseEntity(new UserResource(response.getId()), HttpStatus.OK);
     }

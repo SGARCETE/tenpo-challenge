@@ -1,6 +1,6 @@
 package com.tenpo.challenge.services.impl;
 
-import com.tenpo.challenge.dtos.UserDTO;
+import com.tenpo.challenge.dtos.User;
 import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
@@ -33,8 +33,8 @@ public class DefaultAuthService implements AuthService {
 
     private static Map<Long, String> activeUsersTokens = new HashMap<>();
 
-    public UserDTO loginUser(String userName, String password) {
-        UserDTO user = usersRepository.findByUserName(userName).orElseThrow(() ->
+    public User loginUser(String userName, String password) {
+        User user = usersRepository.findByUserName(userName).orElseThrow(() ->
                 new UserNotFoundException(String.format("The user with name %s does not exists", userName)));
 
         checkIfUserIsAlreadyLogged(user);
@@ -46,8 +46,8 @@ public class DefaultAuthService implements AuthService {
         }
     }
 
-    public UserDTO logoutUser(String userName) {
-        UserDTO user = usersRepository.findByUserName(userName).orElseThrow(() ->
+    public User logoutUser(String userName) {
+        User user = usersRepository.findByUserName(userName).orElseThrow(() ->
                 new UserNotFoundException(String.format("The user with name %s does not exists", userName)));
         deleteActiveUserToken(user);
         return user;
@@ -56,7 +56,7 @@ public class DefaultAuthService implements AuthService {
 
     //todo: token logic should be in another service.
 
-    public String getAndSaveToken(UserDTO userDTO) {
+    public String getAndSaveToken(User userDTO) {
         String secretKey = "mySecretKey";
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList("ROLE_USER");
@@ -78,16 +78,16 @@ public class DefaultAuthService implements AuthService {
         return token;
     }
 
-    public void checkIfUserIsAlreadyLogged(UserDTO userDTO) {
+    public void checkIfUserIsAlreadyLogged(User userDTO) {
         if(activeUsersTokens.containsKey(userDTO.getId()))
             throw new UserAlreadyLoggedException(String.format("The user with name %s is already logged", userDTO.getUserName()));
     }
 
-    public void addActiveUserToken(UserDTO userDTO, String token) {
+    public void addActiveUserToken(User userDTO, String token) {
         this.activeUsersTokens.put(userDTO.getId(), token);
     }
 
-    public void deleteActiveUserToken(UserDTO userDTO) {
+    public void deleteActiveUserToken(User userDTO) {
         if(activeUsersTokens.containsKey(userDTO.getId())) {
             this.activeUsersTokens.remove(userDTO.getId());
         } else {
