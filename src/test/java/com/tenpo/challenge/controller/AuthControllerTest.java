@@ -6,6 +6,7 @@ import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
 import com.tenpo.challenge.exceptions.UserNotLoggedException;
+import com.tenpo.challenge.model.LogoutDto;
 import com.tenpo.challenge.services.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,11 +36,13 @@ public class AuthControllerTest {
     private AuthService authService;
 
     private User user;
+    private LogoutDto logoutDto;
     private String token;
 
     @BeforeEach
     void setUp() {
         user = buildExpectedUser();
+        logoutDto = buildLogoutDto();
         token= "12345";
     }
 
@@ -115,7 +118,7 @@ public class AuthControllerTest {
         doReturn(user).when(authService).logoutUser(anyString());
 
         mockMvc.perform(post("/auth/logout")
-                .content(objectMapper.writeValueAsString(user))
+                .content(objectMapper.writeValueAsString(logoutDto))
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(user.getId()))
@@ -125,12 +128,12 @@ public class AuthControllerTest {
     @Test
     void testAuthLogoutUserIsNotLoggedFailWithStatus400ReturnsUserNotLoggedException() throws Exception {
 
-        UserNotLoggedException expectedException = new UserNotLoggedException(String.format("The user with name %s is not logged", user.getUserName()));
+        UserNotLoggedException expectedException = new UserNotLoggedException(String.format("The user with name %s is not logged", logoutDto.getUserName()));
 
         doThrow(expectedException).when(authService).logoutUser(anyString());
 
         mockMvc.perform(post("/auth/logout")
-                .content(objectMapper.writeValueAsString(user))
+                .content(objectMapper.writeValueAsString(logoutDto))
                 .contentType("application/json"))
                 .andExpect(jsonPath("$.error").value("User not logged exception"))
                 .andExpect(jsonPath("$.message").value(expectedException.getMessage()))
@@ -142,12 +145,12 @@ public class AuthControllerTest {
     void testAuthLogoutUserDoesNotExistsFailWithStatus404ReturnsUserNotFoundException() throws Exception {
 
         UserNotFoundException expectedException = new UserNotFoundException(String.format("The user with name %s does not exists",
-                user.getUserName()));
+                logoutDto.getUserName()));
 
         doThrow(expectedException).when(authService).logoutUser(anyString());
 
         mockMvc.perform(post("/auth/logout")
-                .content(objectMapper.writeValueAsString(user))
+                .content(objectMapper.writeValueAsString(logoutDto))
                 .contentType("application/json"))
                 .andExpect(jsonPath("$.error").value("User not found Exception"))
                 .andExpect(jsonPath("$.message").value(expectedException.getMessage()))
@@ -160,6 +163,11 @@ public class AuthControllerTest {
                 .setId(1L)
                 .setUserName("Santiago")
                 .setPassword("Garcete");
+    };
+
+    private LogoutDto buildLogoutDto() {
+        return new LogoutDto()
+                .setUserName("Santiago");
     };
 
 }

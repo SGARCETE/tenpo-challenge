@@ -11,9 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 @Accessors(chain = true)
 @EqualsAndHashCode
-public class UserDto {
+public class LogoutDto {
     @NotEmpty(message = "Please provide a user_name attribute in JSON request")
     private String userName;
-    @NotEmpty(message = "Please provide a password attribute in JSON request")
-    private String password;
 }

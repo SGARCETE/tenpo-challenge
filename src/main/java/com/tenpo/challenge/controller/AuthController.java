@@ -1,6 +1,7 @@
 package com.tenpo.challenge.controller;
 
 import com.tenpo.challenge.dtos.User;
+import com.tenpo.challenge.model.LogoutDto;
 import com.tenpo.challenge.model.UserDto;
 import com.tenpo.challenge.resources.AuthLoginResource;
 import com.tenpo.challenge.resources.AuthLogoutResource;
@@ -31,13 +32,12 @@ public class AuthController {
         User userDTO = MappingHelper.map(user, User.class);
         User response = authService.loginUser(userDTO.getUserName(), userDTO.getPassword());
         authService.checkIfUserIsAlreadyLogged(userDTO);
-        return new ResponseEntity(new AuthLoginResource(response.getId(), authService.getAndSaveToken(userDTO)), HttpStatus.OK);
+        return new ResponseEntity(new AuthLoginResource(response.getId(), authService.getAndSaveToken(response)), HttpStatus.OK);
     }
 
     @PostMapping("logout")
-    public ResponseEntity<AuthLoginResource> logoutUser(@Valid @RequestBody UserDto user) {
-        User userDTO = MappingHelper.map(user, User.class);
-        User response = authService.logoutUser(userDTO.getUserName());
+    public ResponseEntity<AuthLoginResource> logoutUser(@Valid @RequestBody LogoutDto logoutDto) {
+        User response = authService.logoutUser(logoutDto.getUserName());
         return new ResponseEntity(new AuthLogoutResource(response.getId()), HttpStatus.OK);
     }
 
