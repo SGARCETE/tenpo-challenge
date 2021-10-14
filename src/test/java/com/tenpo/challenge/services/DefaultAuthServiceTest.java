@@ -2,6 +2,7 @@ package com.tenpo.challenge.services;
 
 import com.tenpo.challenge.dtos.UserDTO;
 import com.tenpo.challenge.exceptions.PasswordNotValidException;
+import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
 import com.tenpo.challenge.repository.UsersRepository;
 import com.tenpo.challenge.services.impl.DefaultAuthService;
@@ -52,6 +53,13 @@ public class DefaultAuthServiceTest {
 
         Throwable ex = assertThrows(PasswordNotValidException.class, () -> {authService.authUser(user.getUserName(), "abc");});
         assertEquals(String.format("Password not valid for user %s", user.getUserName()), ex.getMessage());
+    }
+
+    @Test
+    public void testUserIsAlreadyLoggedThenThrowsUserAlreadyLoggedException() {
+        authService.addActiveUserToken(user, "blabla");
+        Throwable ex = assertThrows(UserAlreadyLoggedException.class, () -> {authService.checkIfUserIsAlreadyLogged(user);});
+        assertEquals(String.format("The user with name %s is already logged", user.getUserName()), ex.getMessage());
     }
 
     private UserDTO buildNewUser() {

@@ -61,13 +61,17 @@ public class DefaultAuthService implements AuthService {
                 .signWith(SignatureAlgorithm.HS512,
                         secretKey.getBytes()).compact();
 
-        this.activeUsersTokens.put(userDTO.getId(), token);
+        addActiveUserToken(userDTO, token);
         return token;
     }
 
     public void checkIfUserIsAlreadyLogged(UserDTO userDTO) {
         if(activeUsersTokens.containsKey(userDTO.getId()))
             throw new UserAlreadyLoggedException(String.format("The user with name %s is already logged", userDTO.getUserName()));
+    }
+
+    public void addActiveUserToken(UserDTO userDTO, String token) {
+        this.activeUsersTokens.put(userDTO.getId(), token);
     }
 
 }
