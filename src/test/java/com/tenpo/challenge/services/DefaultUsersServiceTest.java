@@ -1,9 +1,8 @@
-package services;
+package com.tenpo.challenge.services;
 
 import com.tenpo.challenge.dtos.UserDTO;
 import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
 import com.tenpo.challenge.repository.UsersRepository;
-import com.tenpo.challenge.services.UsersService;
 import com.tenpo.challenge.services.impl.DefaultUsersService;
 import org.junit.Before;
 import org.junit.Test;
