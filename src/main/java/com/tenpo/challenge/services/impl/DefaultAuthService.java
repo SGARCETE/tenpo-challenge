@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,8 @@ public class DefaultAuthService implements AuthService {
 
     @Autowired
     private final UsersRepository usersRepository;
+
+    private static Map<Long, String> activeUsersTokens;
 
     public UserDTO authUser(String userName, String password) {
         UserDTO user = usersRepository.findByUserName(userName).orElseThrow(() ->
@@ -38,15 +41,15 @@ public class DefaultAuthService implements AuthService {
         }
     }
 
-    public String getToken(String userName) {
+    public String getAndSaveToken(UserDTO userDTO) {
         String secretKey = "mySecretKey";
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList("ROLE_USER");
 
-        String token = Jwts
+        String token = "Bearer " + Jwts
                 .builder()
                 .setId("ChallengeJWT")
-                .setSubject(userName)
+                .setSubject(userDTO.getUserName())
                 .claim("authorities",
                         grantedAuthorities.stream()
                                 .map(GrantedAuthority::getAuthority)
@@ -56,7 +59,8 @@ public class DefaultAuthService implements AuthService {
                 .signWith(SignatureAlgorithm.HS512,
                         secretKey.getBytes()).compact();
 
-        return "Bearer " + token;
+        this.activeUsersTokens.put(userDTO.getId(), token);
+        return token;
     }
 
 }

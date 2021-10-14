@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -44,7 +45,7 @@ public class AuthControllerTest {
     @Test
     void testAuthUserSuccessfullyWithStatus200ReturnsUserId() throws Exception {
         doReturn(user).when(authService).authUser(anyString(), anyString());
-        doReturn(token).when(authService).getToken(anyString());
+        doReturn(token).when(authService).getAndSaveToken(any(UserDTO.class));
 
         mockMvc.perform(post("/login")
                 .content(objectMapper.writeValueAsString(user))
