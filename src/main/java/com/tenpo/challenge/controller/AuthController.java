@@ -28,7 +28,7 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<AuthResource> loginUser(@Valid @RequestBody User user) {
         UserDTO userDTO = MappingHelper.map(user, UserDTO.class);
-        UserDTO response = authService.authUser(userDTO.getUserName(), userDTO.getPassword());
+        UserDTO response = authService.loginUser(userDTO.getUserName(), userDTO.getPassword());
         authService.checkIfUserIsAlreadyLogged(userDTO);
         return new ResponseEntity(new AuthResource(response.getId(), authService.getAndSaveToken(userDTO)), HttpStatus.OK);
     }

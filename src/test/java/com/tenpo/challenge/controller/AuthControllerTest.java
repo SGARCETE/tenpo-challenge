@@ -44,7 +44,7 @@ public class AuthControllerTest {
 
     @Test
     void testAuthUserSuccessfullyWithStatus200ReturnsUserId() throws Exception {
-        doReturn(user).when(authService).authUser(anyString(), anyString());
+        doReturn(user).when(authService).loginUser(anyString(), anyString());
         doReturn(token).when(authService).getAndSaveToken(any(UserDTO.class));
         doNothing().when(authService).checkIfUserIsAlreadyLogged(any(UserDTO.class));
 
@@ -64,7 +64,7 @@ public class AuthControllerTest {
                 user.getUserName()));
 
         doNothing().when(authService).checkIfUserIsAlreadyLogged(any(UserDTO.class));
-        doThrow(expectedException).when(authService).authUser(user.getUserName(), user.getPassword());
+        doThrow(expectedException).when(authService).loginUser(user.getUserName(), user.getPassword());
 
         mockMvc.perform(post("/login")
                 .content(objectMapper.writeValueAsString(user))
@@ -82,7 +82,7 @@ public class AuthControllerTest {
                 user.getUserName()));
 
         doNothing().when(authService).checkIfUserIsAlreadyLogged(any(UserDTO.class));
-        doThrow(expectedException).when(authService).authUser(user.getUserName(), user.getPassword());
+        doThrow(expectedException).when(authService).loginUser(user.getUserName(), user.getPassword());
 
         mockMvc.perform(post("/login")
                 .content(objectMapper.writeValueAsString(user))

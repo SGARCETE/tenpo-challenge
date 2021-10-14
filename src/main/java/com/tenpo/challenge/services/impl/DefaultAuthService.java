@@ -4,6 +4,7 @@ import com.tenpo.challenge.dtos.UserDTO;
 import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
+import com.tenpo.challenge.exceptions.UserNotLoggedException;
 import com.tenpo.challenge.repository.UsersRepository;
 import com.tenpo.challenge.services.AuthService;
 import io.jsonwebtoken.Jwts;
@@ -32,9 +33,11 @@ public class DefaultAuthService implements AuthService {
 
     private static Map<Long, String> activeUsersTokens = new HashMap<>();
 
-    public UserDTO authUser(String userName, String password) {
+    public UserDTO loginUser(String userName, String password) {
         UserDTO user = usersRepository.findByUserName(userName).orElseThrow(() ->
                 new UserNotFoundException(String.format("The user with name %s does not exists", userName)));
+
+        checkIfUserIsAlreadyLogged(user);
 
         if (encoder.matches(password, user.getPassword())) {
             return user;
@@ -42,6 +45,16 @@ public class DefaultAuthService implements AuthService {
             throw new PasswordNotValidException(String.format("Password not valid for user %s", userName));
         }
     }
+
+    public UserDTO logoutUser(String userName) {
+        UserDTO user = usersRepository.findByUserName(userName).orElseThrow(() ->
+                new UserNotFoundException(String.format("The user with name %s does not exists", userName)));
+        deleteActiveUserToken(user);
+        return user;
+    }
+
+
+    //todo: token logic should be in another service.
 
     public String getAndSaveToken(UserDTO userDTO) {
         String secretKey = "mySecretKey";
@@ -72,6 +85,18 @@ public class DefaultAuthService implements AuthService {
 
     public void addActiveUserToken(UserDTO userDTO, String token) {
         this.activeUsersTokens.put(userDTO.getId(), token);
+    }
+
+    public void deleteActiveUserToken(UserDTO userDTO) {
+        if(activeUsersTokens.containsKey(userDTO.getId())) {
+            this.activeUsersTokens.remove(userDTO.getId());
+        } else {
+            throw new UserNotLoggedException(String.format("The user with name %s is not logged", userDTO.getUserName()));
+        }
+    }
+
+    public void deleteAllUsersTokens() {
+        this.activeUsersTokens.clear();
     }
 
 }
