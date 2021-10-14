@@ -1,9 +1,10 @@
 package com.tenpo.challenge.services;
 
 import com.tenpo.challenge.dtos.UserDTO;
-import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
+import com.tenpo.challenge.exceptions.PasswordNotValidException;
+import com.tenpo.challenge.exceptions.UserNotFoundException;
 import com.tenpo.challenge.repository.UsersRepository;
-import com.tenpo.challenge.services.impl.DefaultUsersService;
+import com.tenpo.challenge.services.impl.DefaultAuthService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -15,32 +16,42 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DefaultAuthServiceTest {
-    private UsersService userService;
-    private PasswordEncoder passwordEncoder;
+    private AuthService authService;
     private UsersRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+    private UserDTO user;
 
     @Before
     public void setUp() {
         userRepository = Mockito.mock(UsersRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
-        userService = new DefaultUsersService(passwordEncoder, userRepository);
+        authService = new DefaultAuthService(passwordEncoder, userRepository);
+        user = buildNewUser();
     }
 
     @Test
-    public void testCreateUserThenReturnSameUser() {
-        UserDTO expectedUser = buildNewUser();
-        Mockito.when(userRepository.save(Mockito.any(UserDTO.class))).thenReturn(expectedUser);
-        UserDTO response = userService.createUser(expectedUser);
-        assertEquals(expectedUser, response);
+    public void testAuthUserThenReturnUser() {
+        Mockito.when(userRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(this.user));
+        Mockito.when(passwordEncoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        UserDTO response = authService.authUser(this.user.getUserName(), this.user.getPassword());
+        assertEquals(this.user, response);
     }
 
     @Test
-    public void testCreateUserThenThrowsUserAlreadyExistsException() {
-        UserDTO expectedUser = buildNewUser();
-        Mockito.when(userRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(expectedUser));
-        Throwable ex = assertThrows(UserAlreadyExistsException.class, () -> {
-            userService.createUser(expectedUser);});
-        assertEquals(String.format("The user with name %s already exists", expectedUser.getUserName()), ex.getMessage());
+    public void testAuthUserThenThrowsUserNotFoundException() {
+        Mockito.when(userRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.empty());
+        Mockito.when(passwordEncoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+
+        Throwable ex = assertThrows(UserNotFoundException.class, () -> {authService.authUser(user.getUserName(), user.getPassword());});
+        assertEquals(String.format("The user with name %s does not exists", user.getUserName()), ex.getMessage());
+    }
+
+    @Test
+    public void testAuthUserThenThrowsPasswordNotValidException() {
+        Mockito.when(userRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(this.user));
+
+        Throwable ex = assertThrows(PasswordNotValidException.class, () -> {authService.authUser(user.getUserName(), "abc");});
+        assertEquals(String.format("Password not valid for user %s", user.getUserName()), ex.getMessage());
     }
 
     private UserDTO buildNewUser() {
