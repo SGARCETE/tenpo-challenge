@@ -36,12 +36,14 @@ public class TenpoChallengeApplication {
                         .addFilterAfter(new TokenValidatorFilter(), UsernamePasswordAuthenticationFilter.class)
                         .authorizeRequests()
                         .antMatchers(HttpMethod.POST, "/users").permitAll()
+                        .antMatchers(HttpMethod.POST, "/login").permitAll()
                         .anyRequest().authenticated();
             } else {
                 http.csrf().disable()
                         .addFilterAfter(new TokenValidatorFilter(), UsernamePasswordAuthenticationFilter.class)
                         .authorizeRequests()
                         .antMatchers(HttpMethod.POST, "/users").permitAll()
+                        .antMatchers(HttpMethod.POST, "/login").permitAll()
                         .anyRequest().authenticated();
             }
         }

@@ -1,7 +1,9 @@
 package com.tenpo.challenge.config;
 
 import com.tenpo.challenge.exceptions.ApiError;
+import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
+import com.tenpo.challenge.exceptions.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,22 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ControllerExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ControllerExceptionHandler.class);
+
+    @ExceptionHandler(value = {PasswordNotValidException.class})
+    public ResponseEntity<ApiError> passwordNotValidException(PasswordNotValidException ex) {
+        LOGGER.warn(String.format("Exception %s was thrown with message: %s", ex.getClass(), ex.getMessage()));
+        ApiError apiError = new ApiError("Password not valid exception", ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(apiError.getStatus())
+                .body(apiError);
+    }
+
+    @ExceptionHandler(value = {UserNotFoundException.class})
+    public ResponseEntity<ApiError> userNotFoundException(UserNotFoundException ex) {
+        LOGGER.warn(String.format("Exception %s was thrown with message: %s", ex.getClass(), ex.getMessage()));
+        ApiError apiError = new ApiError("User not found Exception", ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(apiError.getStatus())
+                .body(apiError);
+    }
 
     @ExceptionHandler(value = {UserAlreadyExistsException.class})
     public ResponseEntity<ApiError> userAlreadyExistsException(UserAlreadyExistsException ex) {
