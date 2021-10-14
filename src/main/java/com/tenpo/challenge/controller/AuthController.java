@@ -29,7 +29,7 @@ public class AuthController {
     public ResponseEntity<AuthResource> loginUser(@Valid @RequestBody User user) {
         UserDTO userDTO = MappingHelper.map(user, UserDTO.class);
         UserDTO response = authService.authUser(userDTO.getUserName(), userDTO.getPassword());
-        LOGGER.info(String.format("user %s logged succesfully", response.getUserName()));
+        authService.checkIfUserIsAlreadyLogged(userDTO);
         return new ResponseEntity(new AuthResource(response.getId(), authService.getAndSaveToken(userDTO)), HttpStatus.OK);
     }
 

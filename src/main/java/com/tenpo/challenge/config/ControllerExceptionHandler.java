@@ -1,9 +1,6 @@
 package com.tenpo.challenge.config;
 
-import com.tenpo.challenge.exceptions.ApiError;
-import com.tenpo.challenge.exceptions.PasswordNotValidException;
-import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
-import com.tenpo.challenge.exceptions.UserNotFoundException;
+import com.tenpo.challenge.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,6 +20,14 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ControllerExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ControllerExceptionHandler.class);
+
+    @ExceptionHandler(value = {UserAlreadyLoggedException.class})
+    public ResponseEntity<ApiError> userAlreadyLoggedException(UserAlreadyLoggedException ex) {
+        LOGGER.warn(String.format("Exception %s was thrown with message: %s", ex.getClass(), ex.getMessage()));
+        ApiError apiError = new ApiError("User already logged exception", ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(apiError.getStatus())
+                .body(apiError);
+    }
 
     @ExceptionHandler(value = {PasswordNotValidException.class})
     public ResponseEntity<ApiError> passwordNotValidException(PasswordNotValidException ex) {

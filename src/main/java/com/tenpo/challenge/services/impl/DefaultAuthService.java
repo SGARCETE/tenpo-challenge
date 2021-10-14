@@ -2,6 +2,7 @@ package com.tenpo.challenge.services.impl;
 
 import com.tenpo.challenge.dtos.UserDTO;
 import com.tenpo.challenge.exceptions.PasswordNotValidException;
+import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
 import com.tenpo.challenge.repository.UsersRepository;
 import com.tenpo.challenge.services.AuthService;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +30,7 @@ public class DefaultAuthService implements AuthService {
     @Autowired
     private final UsersRepository usersRepository;
 
-    private static Map<Long, String> activeUsersTokens;
+    private static Map<Long, String> activeUsersTokens = new HashMap<>();
 
     public UserDTO authUser(String userName, String password) {
         UserDTO user = usersRepository.findByUserName(userName).orElseThrow(() ->
@@ -61,6 +63,11 @@ public class DefaultAuthService implements AuthService {
 
         this.activeUsersTokens.put(userDTO.getId(), token);
         return token;
+    }
+
+    public void checkIfUserIsAlreadyLogged(UserDTO userDTO) {
+        if(activeUsersTokens.containsKey(userDTO.getId()))
+            throw new UserAlreadyLoggedException(String.format("The user with name %s is already logged", userDTO.getUserName()));
     }
 
 }
