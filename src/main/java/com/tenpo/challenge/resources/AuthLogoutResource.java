@@ -11,7 +11,6 @@ import lombok.experimental.Accessors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResource {
+public class AuthLogoutResource {
     long id;
-    String token;
 }

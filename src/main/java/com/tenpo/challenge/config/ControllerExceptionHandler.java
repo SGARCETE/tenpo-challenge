@@ -21,6 +21,14 @@ import java.util.stream.Collectors;
 public class ControllerExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
+    @ExceptionHandler(value = {UserNotLoggedException.class})
+    public ResponseEntity<ApiError> userNotLoggedException(UserNotLoggedException ex) {
+        LOGGER.warn(String.format("Exception %s was thrown with message: %s", ex.getClass(), ex.getMessage()));
+        ApiError apiError = new ApiError("User not logged exception", ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(apiError.getStatus())
+                .body(apiError);
+    }
+
     @ExceptionHandler(value = {UserAlreadyLoggedException.class})
     public ResponseEntity<ApiError> userAlreadyLoggedException(UserAlreadyLoggedException ex) {
         LOGGER.warn(String.format("Exception %s was thrown with message: %s", ex.getClass(), ex.getMessage()));

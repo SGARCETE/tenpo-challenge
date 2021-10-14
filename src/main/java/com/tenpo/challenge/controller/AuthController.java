@@ -2,7 +2,8 @@ package com.tenpo.challenge.controller;
 
 import com.tenpo.challenge.dtos.User;
 import com.tenpo.challenge.model.UserDto;
-import com.tenpo.challenge.resources.AuthResource;
+import com.tenpo.challenge.resources.AuthLoginResource;
+import com.tenpo.challenge.resources.AuthLogoutResource;
 import com.tenpo.challenge.services.AuthService;
 import com.tenpo.challenge.util.MappingHelper;
 import org.slf4j.Logger;
@@ -26,19 +27,18 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("login")
-    public ResponseEntity<AuthResource> loginUser(@Valid @RequestBody UserDto user) {
+    public ResponseEntity<AuthLoginResource> loginUser(@Valid @RequestBody UserDto user) {
         User userDTO = MappingHelper.map(user, User.class);
         User response = authService.loginUser(userDTO.getUserName(), userDTO.getPassword());
         authService.checkIfUserIsAlreadyLogged(userDTO);
-        return new ResponseEntity(new AuthResource(response.getId(), authService.getAndSaveToken(userDTO)), HttpStatus.OK);
+        return new ResponseEntity(new AuthLoginResource(response.getId(), authService.getAndSaveToken(userDTO)), HttpStatus.OK);
     }
 
     @PostMapping("logout")
-    public ResponseEntity<AuthResource> logoutUser(@Valid @RequestBody UserDto user) {
+    public ResponseEntity<AuthLoginResource> logoutUser(@Valid @RequestBody UserDto user) {
         User userDTO = MappingHelper.map(user, User.class);
-        User response = authService.loginUser(userDTO.getUserName(), userDTO.getPassword());
-        authService.checkIfUserIsAlreadyLogged(userDTO);
-        return new ResponseEntity(new AuthResource(response.getId(), authService.getAndSaveToken(userDTO)), HttpStatus.OK);
+        User response = authService.logoutUser(userDTO.getUserName());
+        return new ResponseEntity(new AuthLogoutResource(response.getId()), HttpStatus.OK);
     }
 
 }

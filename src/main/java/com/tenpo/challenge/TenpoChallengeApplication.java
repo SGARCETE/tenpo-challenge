@@ -44,7 +44,8 @@ public class TenpoChallengeApplication {
                         .addFilterAfter(new TokenValidatorFilter(), UsernamePasswordAuthenticationFilter.class)
                         .authorizeRequests()
                         .antMatchers(HttpMethod.POST, "/users").permitAll()
-                        .antMatchers(HttpMethod.POST, "/login").permitAll()
+                        .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .antMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                         .anyRequest().authenticated();
             }
         }

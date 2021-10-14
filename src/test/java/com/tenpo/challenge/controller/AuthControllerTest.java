@@ -5,6 +5,7 @@ import com.tenpo.challenge.dtos.User;
 import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
+import com.tenpo.challenge.exceptions.UserNotLoggedException;
 import com.tenpo.challenge.services.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testAuthUserSuccessfullyWithStatus200ReturnsUserId() throws Exception {
+    void testAuthLoginUserSuccessfullyWithStatus200ReturnsUserId() throws Exception {
         doReturn(user).when(authService).loginUser(anyString(), anyString());
         doReturn(token).when(authService).getAndSaveToken(any(User.class));
         doNothing().when(authService).checkIfUserIsAlreadyLogged(any(User.class));
@@ -58,7 +59,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testAuthUserFailWithStatus404ReturnsUserNotFoundException() throws Exception {
+    void testAuthLoginUserFailWithStatus404ReturnsUserNotFoundException() throws Exception {
 
         UserNotFoundException expectedException = new UserNotFoundException(String.format("The user with name %s does not exists",
                 user.getUserName()));
@@ -76,7 +77,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testAuthUserPasswordFailWithStatus400ReturnsPasswordNotValidException() throws Exception {
+    void testAuthLoginUserPasswordFailWithStatus400ReturnsPasswordNotValidException() throws Exception {
 
         PasswordNotValidException expectedException = new PasswordNotValidException(String.format("Password not valid for user %s",
                 user.getUserName()));
@@ -94,7 +95,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testAuthUserIsAlreadyLoggedFailWithStatus400ReturnsUserAlreadyLoggedException() throws Exception {
+    void testAuthLoginUserIsAlreadyLoggedFailWithStatus400ReturnsUserAlreadyLoggedException() throws Exception {
 
         UserAlreadyLoggedException expectedException = new UserAlreadyLoggedException(String.format("The user with name %s is already logged", user.getUserName()));
 
@@ -106,6 +107,51 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.error").value("User already logged exception"))
                 .andExpect(jsonPath("$.message").value(expectedException.getMessage()))
                 .andExpect(jsonPath("$.status").value("400"))
+        ;
+    }
+
+    @Test
+    void testAuthLogoutUserSuccessfullyWithStatus200ReturnsUserId() throws Exception {
+        doReturn(user).when(authService).logoutUser(anyString());
+
+        mockMvc.perform(post("/auth/logout")
+                .content(objectMapper.writeValueAsString(user))
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(user.getId()))
+        ;
+    }
+
+    @Test
+    void testAuthLogoutUserIsNotLoggedFailWithStatus400ReturnsUserNotLoggedException() throws Exception {
+
+        UserNotLoggedException expectedException = new UserNotLoggedException(String.format("The user with name %s is not logged", user.getUserName()));
+
+        doThrow(expectedException).when(authService).logoutUser(anyString());
+
+        mockMvc.perform(post("/auth/logout")
+                .content(objectMapper.writeValueAsString(user))
+                .contentType("application/json"))
+                .andExpect(jsonPath("$.error").value("User not logged exception"))
+                .andExpect(jsonPath("$.message").value(expectedException.getMessage()))
+                .andExpect(jsonPath("$.status").value("400"))
+        ;
+    }
+
+    @Test
+    void testAuthLogoutUserDoesNotExistsFailWithStatus404ReturnsUserNotFoundException() throws Exception {
+
+        UserNotFoundException expectedException = new UserNotFoundException(String.format("The user with name %s does not exists",
+                user.getUserName()));
+
+        doThrow(expectedException).when(authService).logoutUser(anyString());
+
+        mockMvc.perform(post("/auth/logout")
+                .content(objectMapper.writeValueAsString(user))
+                .contentType("application/json"))
+                .andExpect(jsonPath("$.error").value("User not found Exception"))
+                .andExpect(jsonPath("$.message").value(expectedException.getMessage()))
+                .andExpect(jsonPath("$.status").value("404"))
         ;
     }
 
