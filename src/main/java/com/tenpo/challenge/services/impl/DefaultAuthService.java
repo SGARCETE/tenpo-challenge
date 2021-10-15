@@ -1,7 +1,9 @@
 package com.tenpo.challenge.services.impl;
 
+import com.tenpo.challenge.model.RequestAudit;
 import com.tenpo.challenge.model.User;
 import com.tenpo.challenge.exceptions.*;
+import com.tenpo.challenge.repository.RequestsAuditRepository;
 import com.tenpo.challenge.repository.UsersRepository;
 import com.tenpo.challenge.services.AuthService;
 import io.jsonwebtoken.Jwts;
@@ -28,11 +30,15 @@ public class DefaultAuthService implements AuthService {
     @Autowired
     private final UsersRepository usersRepository;
 
+    @Autowired
+    private final RequestsAuditRepository requestsAuditRepository;
+
     private static Map<Long, String> activeUsersTokens = new HashMap<>();
 
     public User loginUser(String userName, String password) {
         User user = usersRepository.findByUserName(userName).orElseThrow(() ->
                 new UserNotFoundException(String.format("The user with name %s does not exists", userName)));
+        requestsAuditRepository.save(new RequestAudit(user, "auth/login"));
 
         checkIfUserIsAlreadyLogged(user);
 
@@ -46,6 +52,7 @@ public class DefaultAuthService implements AuthService {
     public User logoutUser(String userName) {
         User user = usersRepository.findByUserName(userName).orElseThrow(() ->
                 new UserNotFoundException(String.format("The user with name %s does not exists", userName)));
+        requestsAuditRepository.save(new RequestAudit(user, "auth/logout"));
         deleteActiveUserToken(user);
         return user;
     }

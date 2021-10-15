@@ -1,4 +1,8 @@
 package com.tenpo.challenge.repository;
 
-public interface RequestsAuditRepository {
+import com.tenpo.challenge.model.RequestAudit;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RequestsAuditRepository extends JpaRepository<RequestAudit, Long>  {
+    RequestAudit save(RequestAudit requestAudit);
 }

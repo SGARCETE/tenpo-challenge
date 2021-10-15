@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -20,4 +22,9 @@ public class User {
     @Column(unique = true)
     private String userName;
     private String password;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "user")
+    private List<RequestAudit> requests = Collections.emptyList();
 }

@@ -2,6 +2,7 @@ package com.tenpo.challenge.services;
 
 import com.tenpo.challenge.model.User;
 import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
+import com.tenpo.challenge.repository.RequestsAuditRepository;
 import com.tenpo.challenge.repository.UsersRepository;
 import com.tenpo.challenge.services.impl.DefaultUsersService;
 import org.junit.Before;
@@ -19,12 +20,14 @@ public class DefaultUsersServiceTest {
     private UsersService userService;
     private PasswordEncoder passwordEncoder;
     private UsersRepository userRepository;
+    private RequestsAuditRepository requestsAuditRepository;
 
     @Before
     public void setUp() {
         userRepository = Mockito.mock(UsersRepository.class);
+        requestsAuditRepository = Mockito.mock(RequestsAuditRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
-        userService = new DefaultUsersService(passwordEncoder, userRepository);
+        userService = new DefaultUsersService(passwordEncoder, userRepository, requestsAuditRepository);
     }
 
     @Test

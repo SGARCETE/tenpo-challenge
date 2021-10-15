@@ -5,6 +5,7 @@ import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
 import com.tenpo.challenge.exceptions.UserNotLoggedException;
+import com.tenpo.challenge.repository.RequestsAuditRepository;
 import com.tenpo.challenge.repository.UsersRepository;
 import com.tenpo.challenge.services.impl.DefaultAuthService;
 import org.junit.Before;
@@ -21,13 +22,15 @@ public class DefaultAuthServiceTest {
     private AuthService authService;
     private UsersRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private RequestsAuditRepository requestsAuditRepository;
     private User user;
 
     @Before
     public void setUp() {
         userRepository = Mockito.mock(UsersRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
-        authService = new DefaultAuthService(passwordEncoder, userRepository);
+        requestsAuditRepository = Mockito.mock(RequestsAuditRepository.class);
+        authService = new DefaultAuthService(passwordEncoder, userRepository, requestsAuditRepository);
         user = buildNewUser();
         authService.deleteAllUsersTokens();
     }
