@@ -35,6 +35,15 @@ Run the following commands in order:
 3. Run command **sudo docker build --tag=tenpo-challenge:latest .**
 4. Run command **sudo docker run -d -p 8080:8080 -t tenpo-challenge:latest**
 
+or you can download the image from dockerhub:
+
+https://hub.docker.com/r/santi101093/dockerhub/tags
+
+with the following commands:
+
+1- **sudo docker pull santi101093/dockerhub:tenpo**
+2- Run command **sudo docker run -d -p 8080:8080 -t santi101093/dockerhub:tenpo**
+
 Project will run in localhost:8080.
 
 **IMPORTANT:** Once the application stops, the stored data in database will we deleted because H2 is a database that runs in memory
