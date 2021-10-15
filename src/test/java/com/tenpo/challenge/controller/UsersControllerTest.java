@@ -1,7 +1,7 @@
 package com.tenpo.challenge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tenpo.challenge.dtos.User;
+import com.tenpo.challenge.model.User;
 import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
 import com.tenpo.challenge.services.UsersService;
 import org.junit.jupiter.api.BeforeEach;

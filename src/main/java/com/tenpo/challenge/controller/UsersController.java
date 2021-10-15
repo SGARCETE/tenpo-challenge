@@ -1,7 +1,7 @@
 package com.tenpo.challenge.controller;
 
-import com.tenpo.challenge.dtos.User;
-import com.tenpo.challenge.model.UserDto;
+import com.tenpo.challenge.model.User;
+import com.tenpo.challenge.dtos.UserDto;
 import com.tenpo.challenge.resources.UserResource;
 import com.tenpo.challenge.services.UsersService;
 import com.tenpo.challenge.util.MappingHelper;

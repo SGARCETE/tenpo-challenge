@@ -5,13 +5,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "users")
 @Getter
 @Setter
 @Accessors(chain = true)
 @EqualsAndHashCode
-public class LogoutDto {
-    @NotEmpty(message = "Please provide a user_name attribute in JSON request")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true)
     private String userName;
+    private String password;
 }

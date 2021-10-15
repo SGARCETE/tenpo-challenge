@@ -1,8 +1,8 @@
 package com.tenpo.challenge.controller;
 
-import com.tenpo.challenge.dtos.User;
-import com.tenpo.challenge.model.LogoutDto;
-import com.tenpo.challenge.model.UserDto;
+import com.tenpo.challenge.model.User;
+import com.tenpo.challenge.dtos.LogoutDto;
+import com.tenpo.challenge.dtos.UserDto;
 import com.tenpo.challenge.resources.AuthLoginResource;
 import com.tenpo.challenge.resources.AuthLogoutResource;
 import com.tenpo.challenge.services.AuthService;

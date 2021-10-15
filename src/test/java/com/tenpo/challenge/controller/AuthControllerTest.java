@@ -1,12 +1,12 @@
 package com.tenpo.challenge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tenpo.challenge.dtos.User;
+import com.tenpo.challenge.model.User;
 import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
 import com.tenpo.challenge.exceptions.UserNotLoggedException;
-import com.tenpo.challenge.model.LogoutDto;
+import com.tenpo.challenge.dtos.LogoutDto;
 import com.tenpo.challenge.services.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

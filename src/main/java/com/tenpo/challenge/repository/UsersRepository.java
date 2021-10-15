@@ -1,6 +1,6 @@
 package com.tenpo.challenge.repository;
 
-import com.tenpo.challenge.dtos.User;
+import com.tenpo.challenge.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

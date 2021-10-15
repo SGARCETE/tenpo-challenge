@@ -1,6 +1,6 @@
 package com.tenpo.challenge.services;
 
-import com.tenpo.challenge.dtos.User;
+import com.tenpo.challenge.model.User;
 import com.tenpo.challenge.exceptions.PasswordNotValidException;
 import com.tenpo.challenge.exceptions.UserAlreadyLoggedException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;

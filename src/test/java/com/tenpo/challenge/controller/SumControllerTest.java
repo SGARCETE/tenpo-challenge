@@ -1,10 +1,9 @@
 package com.tenpo.challenge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tenpo.challenge.dtos.User;
 import com.tenpo.challenge.exceptions.TokenNotValidException;
 import com.tenpo.challenge.exceptions.UserNotFoundException;
-import com.tenpo.challenge.model.SumDto;
+import com.tenpo.challenge.dtos.SumDto;
 import com.tenpo.challenge.services.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -90,6 +88,5 @@ public class SumControllerTest {
                 .setFirstNumber(1.0)
                 .setSecondNumber(2.0);
     };
-
 
 }

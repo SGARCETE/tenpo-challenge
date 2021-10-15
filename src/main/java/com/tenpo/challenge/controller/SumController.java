@@ -1,12 +1,8 @@
 package com.tenpo.challenge.controller;
 
-import com.tenpo.challenge.dtos.User;
-import com.tenpo.challenge.model.SumDto;
-import com.tenpo.challenge.model.UserDto;
-import com.tenpo.challenge.resources.AuthLoginResource;
+import com.tenpo.challenge.dtos.SumDto;
 import com.tenpo.challenge.resources.SumResource;
 import com.tenpo.challenge.services.AuthService;
-import com.tenpo.challenge.util.MappingHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

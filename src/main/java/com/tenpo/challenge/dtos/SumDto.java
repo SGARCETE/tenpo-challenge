@@ -1,4 +1,4 @@
-package com.tenpo.challenge.model;
+package com.tenpo.challenge.dtos;
 
 import lombok.*;
 import lombok.experimental.Accessors;

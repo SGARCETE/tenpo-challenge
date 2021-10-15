@@ -1,6 +1,6 @@
 package com.tenpo.challenge.services.impl;
 
-import com.tenpo.challenge.dtos.User;
+import com.tenpo.challenge.model.User;
 import com.tenpo.challenge.exceptions.UserAlreadyExistsException;
 import com.tenpo.challenge.repository.UsersRepository;
 import com.tenpo.challenge.services.UsersService;
