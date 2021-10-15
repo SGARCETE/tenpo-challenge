@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.OnDelete;
@@ -18,6 +19,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Accessors(chain = true)
+@NoArgsConstructor
 @EqualsAndHashCode
 public class RequestAudit {
     @Id

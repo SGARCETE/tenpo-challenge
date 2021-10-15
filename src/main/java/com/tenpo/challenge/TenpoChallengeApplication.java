@@ -39,6 +39,7 @@ public class TenpoChallengeApplication {
                         .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .antMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                         .antMatchers(HttpMethod.POST, "/sum").permitAll()
+                        .antMatchers(HttpMethod.GET, "/search").permitAll()
                         .anyRequest().authenticated();
             } else {
                 http.csrf().disable()
@@ -47,6 +48,7 @@ public class TenpoChallengeApplication {
                         .antMatchers(HttpMethod.POST, "/users").permitAll()
                         .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .antMatchers(HttpMethod.POST, "/auth/logout").permitAll()
+                        .antMatchers(HttpMethod.GET, "/search").permitAll()
                         .anyRequest().authenticated();
             }
         }
