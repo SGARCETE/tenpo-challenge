@@ -9,4 +9,5 @@ public interface AuthService {
     String getAndSaveToken(User userDTO);
     void addActiveUserToken(User userDTO, String token);
     void deleteAllUsersTokens();
+    void checkIfUserExistsAndIsLogged(String username, String token);
 }

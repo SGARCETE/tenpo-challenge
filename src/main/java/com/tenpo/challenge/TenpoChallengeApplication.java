@@ -38,6 +38,7 @@ public class TenpoChallengeApplication {
                         .antMatchers(HttpMethod.POST, "/users").permitAll()
                         .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .antMatchers(HttpMethod.POST, "/auth/logout").permitAll()
+                        .antMatchers(HttpMethod.POST, "/sum").permitAll()
                         .anyRequest().authenticated();
             } else {
                 http.csrf().disable()
